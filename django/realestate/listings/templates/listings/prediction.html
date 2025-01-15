@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Predykcja ceny nieruchomości</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #e6ccff; 
+            padding: 30px;
+            margin: 0;
+        }
+        h1 {
+            color: #4b0082;
+            margin-bottom: 20px;
+        }
+        form {
+            margin: 20px auto;
+            max-width: 500px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: white;
+            background-color: #6a0dad;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        button:hover {
+            background-color: #4b0082; 
+            transform: scale(1.05); 
+        }
+        button:active {
+            transform: scale(0.95);
+        }
+        h2 {
+            color: #4b0082;
+            margin-top: 20px;
+        }
+        .back-button {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Przewidywanie ceny nieruchomości</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Przewiduj cenę</button>
+    </form>
+
+    {% if prediction %}
+        <h2>Przewidywana cena: {{ prediction|floatformat:2 }} PLN</h2>
+    {% endif %}
+
+    <div class="back-button">
+        <a href="{% url 'home' %}">
+            <button>Powrót do strony głównej</button>
+        </a>
+    </div>
+</body>
+</html>

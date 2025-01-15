@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wyszukiwarka ofert</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #e6ccff; 
+            padding: 30px;
+            margin: 0;
+        }
+        h1 {
+            color: #4b0082; 
+            margin-bottom: 20px;
+        }
+        .form-container {
+            margin: 20px auto;
+            max-width: 500px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: white;
+            background-color: #6a0dad; 
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        button:hover {
+            background-color: #4b0082; 
+            transform: scale(1.05); 
+        }
+        button:active {
+            transform: scale(0.95); 
+        }
+        table {
+            width: 100%;
+            max-width: 800px;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            padding: 15px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #6a0dad; 
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        a {
+            color: #6a0dad;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Wyszukiwarka ofert nieruchomości</h1>
+
+    <div class="form-container">
+        <form method="get">
+            {{ form.as_p }}
+            <button type="submit">Szukaj</button>
+        </form>
+    </div>
+    
+    <h2>Wyniki:</h2>
+    {% if results %}
+    <table>
+        <thead>
+            <tr>
+                <th>Lokalizacja</th>
+                <th>Cena (zł)</th>
+                <th>Powierzchnia (m²)</th>
+                <th>Liczba pokoi</th>
+                <th>Link</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for aktualne in results %}
+            <tr>
+                <td>{{ aktualne.lokalizacja }}</td>
+                <td>{{ aktualne.cena }}</td>
+                <td>{{ aktualne.powierzchnia_calkowita }}</td>
+                <td>{{ aktualne.liczba_pokoi }}</td>
+                <td><a href="{{ aktualne.url }}" target="_blank">Zobacz ofertę</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>Brak wyników.</p>
+    {% endif %}
+    
+    <br>
+    <a href="{% url 'home' %}"><button>Powrót do strony głównej</button></a>
+</body>
+</html>

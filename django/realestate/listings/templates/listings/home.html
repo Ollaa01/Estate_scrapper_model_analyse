@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Nieruchomościowy</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #e6ccff; 
+            padding: 50px;
+            margin: 0;
+        }
+        h1 {
+            color: #4b0082; 
+            margin-bottom: 50px;
+            font-size: 2.5em;
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        a {
+            text-decoration: none;
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 16px;
+            color: white;
+            background-color: #6a0dad; 
+            border: none;
+            border-radius: 10px; 
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        button:hover {
+            background-color: #4b0082; 
+            transform: scale(1.05);
+        }
+        button:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body>
+    <h1>Portal Nieruchomościowy</h1>
+    <div class="button-container">
+        <a href="{% url 'search' %}"><button>Znajdź Ofertę</button></a>
+        <a href="{% url 'plots' %}"><button>Analiza Rynku</button></a>
+        <a href="{% url 'predict_price' %}"><button>Prognozuj Cenę</button></a>
+    </div>
+</body>
+</html>

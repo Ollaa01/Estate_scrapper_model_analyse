@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wykres dzielnicy</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #e6ccff; 
+            padding: 30px;
+            margin: 0;
+        }
+        h1 {
+            color: #4b0082;
+            margin-bottom: 20px;
+        }
+        form {
+            margin: 20px auto;
+            max-width: 500px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            font-size: 18px;
+            color: #4b0082;
+            margin-right: 10px;
+        }
+        select {
+            padding: 8px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: white;
+            background-color: #6a0dad; 
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        button:hover {
+            background-color: #4b0082; 
+            transform: scale(1.05); 
+        }
+        button:active {
+            transform: scale(0.95); 
+        }
+        h2 {
+            color: #4b0082;
+            margin-top: 20px;
+        }
+        .back-button {
+            margin-top: 20px;
+        }
+
+        .summary {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+            text-align: left;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .summary ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .summary li {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Wybierz dzielnicę do analizy</h1>
+
+    <form method="get">
+        <label for="dzielnica">Dzielnica:</label>
+        <select name="dzielnica" id="dzielnica">
+            <option value="">Wybierz dzielnicę</option>
+            {% for dzielnica in dzielnice %}
+                <option value="{{ dzielnica }}">{{ dzielnica }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Pokaż wykres</button>
+    </form>
+
+    {% if plot_buffer %}
+    <h2>Wykres dla wybranej dzielnicy</h2>
+    <img src="data:image/png;base64,{{ plot_buffer }}" alt="Wykres">
+    
+    <h2>Podsumowanie rynku nieruchomości w dzielnicy {{ dzielnica }}</h2>
+    <div class="summary">
+        <ul>
+            <li>Średnia cena: {{ stats.average_price|floatformat:2 }} PLN</li>
+            <li>Mediana ceny: {{ stats.median_price|floatformat:2 }} PLN</li>
+            <li>Odchylenie standardowe ceny: {{ stats.std_price|floatformat:2 }} PLN</li>
+            <li>Średnia powierzchnia: {{ stats.average_area|floatformat:2 }} m²</li>
+            <li>Mediana powierzchni: {{ stats.median_area|floatformat:2 }} m²</li>
+            <li>Odchylenie standardowe powierzchni: {{ stats.std_area|floatformat:2 }} m²</li>
+            <li>Średnia liczba pokoi: {{ stats.average_rooms|floatformat:2 }}</li>
+            <li>Mediana liczby pokoi: {{ stats.median_rooms|floatformat:2 }}</li>
+        </ul>
+    </div>
+    {% endif %}
+
+    <div class="back-button">
+        <a href="{% url 'home' %}">
+            <button>Powrót do strony głównej</button>
+        </a>
+    </div>
+</body>
+</html>
