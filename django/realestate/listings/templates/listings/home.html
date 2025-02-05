@@ -3,54 +3,103 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal Nieruchomościowy</title>
+    <title>Portal mieszkań Katowice</title>
+    {% load static %}
     <style>
+        html {
+            cursor: url("{% static 'cursor_small.png' %}") 16 16, auto;
+        }
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            background-color: #e6ccff; 
+            background-color: #ffd362e8;
             padding: 50px;
-            margin: 0;
+            margin: 0; 
+            /*
+            background-image: url("{% static 'sw-jan-pawel-ii-a6c-656.jpg' %}");  
+            background-size: cover;  
+            background-position: center;  
+            background-attachment: fixed; 
+            position: relative;  
+            */
         }
+
         h1 {
-            color: #4b0082; 
+            color: #a98003; 
             margin-bottom: 50px;
             font-size: 2.5em;
         }
+
         .button-container {
             display: flex;
             justify-content: center;
             gap: 20px;
             flex-wrap: wrap;
         }
-        a {
-            text-decoration: none;
-        }
+
         button {
             padding: 15px 30px;
             font-size: 16px;
             color: white;
-            background-color: #6a0dad; 
+            background-color: #a98003; 
             border: none;
             border-radius: 10px; 
             cursor: pointer;
             transition: background-color 0.3s, transform 0.2s;
         }
+
         button:hover {
-            background-color: #4b0082; 
+            background-color: #8e6c06; 
             transform: scale(1.05);
+            cursor: url("{% static 'cursor_medium.png' %}") 16 16, pointer; 
         }
+
         button:active {
             transform: scale(0.95);
         }
+
+        .image-container {
+            margin-top: 50px;
+        }
+
+        .image-container img {
+            width: 100%; 
+            max-width: 800px; 
+            height: auto; 
+            border-radius: 10px; 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+        }
+
+        .surprise-container {
+        position: fixed; 
+        bottom: 20px;    
+        left: 50%;     
+        transform: translateX(-50%);
+    }
     </style>
 </head>
 <body>
-    <h1>Portal Nieruchomościowy</h1>
+    <h1>Portal mieszkań Katowice</h1>
     <div class="button-container">
         <a href="{% url 'search' %}"><button>Znajdź Ofertę</button></a>
         <a href="{% url 'plots' %}"><button>Analiza Rynku</button></a>
         <a href="{% url 'predict_price' %}"><button>Prognozuj Cenę</button></a>
     </div>
+    <div class="surprise-container">
+        <button onclick="playSurprise()">NIESPODZIANKA</button>
+    </div>
+
+    <audio id="audio" loop>
+        <source src="{% static 'Barka_Elektro.mp3' %}" type="audio/mpeg">
+        Twoja przeglądarka nie wspiera odtwarzania audio.
+    </audio>
+
+    <script>
+        function playSurprise() {
+            const audio = document.getElementById('audio');
+            audio.play();
+        }
+    </script>
 </body>
 </html>
+

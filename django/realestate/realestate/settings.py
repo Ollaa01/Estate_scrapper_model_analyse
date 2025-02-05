@@ -76,8 +76,8 @@ WSGI_APPLICATION = 'realestate.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',  # SQLite jako silnik
-        'NAME': r'C:\Users\PC\Desktop\scrapping_danych\real_estate2.db',    # Ścieżka do Twojej bazy danych
+        'ENGINE': 'django.db.backends.sqlite3', 
+        'NAME': r'real_estate2.db',   
     }
 }
 
@@ -117,6 +117,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [
+    BASE_DIR / "static",  # Jeśli masz folder static w głównym katalogu projektu
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field

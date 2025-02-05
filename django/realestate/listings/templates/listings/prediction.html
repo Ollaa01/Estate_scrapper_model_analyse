@@ -55,13 +55,75 @@
 
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
+        
+        <label for="powierzchnia">Powierzchnia całkowita (m²):</label>
+        <input type="number" step="0.01" name="powierzchnia" id="powierzchnia"  min="0" required><br><br>
+
+        <label for="liczba_pokoi">Liczba pokoi:</label>
+        <input type="number" name="liczba_pokoi" id="liczba_pokoi"  min="0" required><br><br>
+
+        <label for="pietro">Piętro:</label>
+        <input type="number" name="pietro" id="pietro"  min="0" required ><br><br>
+
+        <label for="liczba_pieter">Liczba pięter:</label>
+        <input type="number" name="liczba_pieter" id="liczba_pieter" min="0" required><br><br>
+
+        <label for="garaz">Garaż:</label>
+        <input type="checkbox" name="garaz" id="garaz"><br><br>
+
+        <label for="miejsce_parkingowe">Miejsce parkingowe:</label>
+        <input type="checkbox" name="miejsce_parkingowe" id="miejsce_parkingowe"><br><br>
+
+        <label for="districts">Dzielnica:</label>
+        <select id="districts" name="dzielnica_num">
+            <optgroup label="Dzielnice 1">
+                <option value="1">Centrum</option>
+                <option value="1">Śródmieście</option>
+                <option value="1">Koszutka</option>
+                <option value="1">Bogucice</option>
+            </optgroup>
+            <optgroup label="Dzielnice 2">
+                <option value="2">Os. Paderewskiego</option>
+                <option value="2">Muchowiec</option>
+                <option value="2">Załęże</option>
+                <option value="2">Osiedle Wincentego Witosa</option>
+                <option value="2">Osiedle Tysiąclecia</option>
+            </optgroup>
+            <optgroup label="Dzielnice 3">
+                <option value="3">Dąb</option>
+                <option value="3">Wełnowiec-Józefowiec</option>
+                <option value="3">Ligota</option>
+                <option value="3">Brynów</option>
+            </optgroup>
+            <optgroup label="Dzielnice 4">
+                <option value="4">Załęska Hałda</option>
+                <option value="4">Zawodzie</option>
+                <option value="4">Dąbrówka Mała</option>
+                <option value="4">Szopienice</option>
+            </optgroup>
+            <optgroup label="Dzielnice 5">
+                <option value="5">Janów-Nikiszowiec</option>
+                <option value="5">Nikiszowiec</option>
+                <option value="5">Giszowiec</option>
+                <option value="5">Piotrowice</option>
+            </optgroup>
+        </select><br><br>
         <button type="submit">Przewiduj cenę</button>
     </form>
 
+    <script>
+        document.getElementById('liczba_pieter').addEventListener('input', function() {
+            var maxValue = this.value;
+            var pietroField = document.getElementById('pietro');
+            pietroField.setAttribute('max', maxValue);
+        });
+    </script>
+
     {% if prediction %}
-        <h2>Przewidywana cena: {{ prediction|floatformat:2 }} PLN</h2>
-    {% endif %}
+    <h2>Przewidywana cena za m²: {{ prediction|floatformat:2 }} PLN</h2>
+{% else %}
+    <h2>Brak przewidywanej ceny.</h2>
+{% endif %}
 
     <div class="back-button">
         <a href="{% url 'home' %}">

@@ -79,18 +79,41 @@
         .summary li {
             margin: 10px 0;
         }
+        select {
+            padding: 8px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            margin-bottom: 20px;
+            width: 100%; 
+            max-width: 500px; 
+            word-wrap: break-word;
+            white-space: normal;
+        }
+        select option {
+            max-height: 150px;
+            overflow-y: auto; 
+            white-space: normal;
+            word-wrap: break-word; 
+            padding: 5px; 
+        }
+        select {
+            max-height: 150px;
+            overflow-y: auto; 
+        }
     </style>
 </head>
 <body>
-    <h1>Wybierz dzielnicę do analizy</h1>
+    <h1>Wybierz grupę dzielnic do analizy</h1>
 
     <form method="get">
-        <label for="dzielnica">Dzielnica:</label>
-        <select name="dzielnica" id="dzielnica">
+        <label for="dzielnica_num">Grupa dzielnic:</label>
+        <select name="dzielnica_num" id="dzielnica_num">
             <option value="">Wybierz dzielnicę</option>
-            {% for dzielnica in dzielnice %}
-                <option value="{{ dzielnica }}">{{ dzielnica }}</option>
+            {% for group_number, group in grouped_districts.items %}
+                <option value="{{ group_number }}">{{ group.label }}: ({{ group.districts|join:', ' }})</option>
             {% endfor %}
+        
         </select>
         <button type="submit">Pokaż wykres</button>
     </form>
@@ -119,5 +142,6 @@
             <button>Powrót do strony głównej</button>
         </a>
     </div>
+    
 </body>
 </html>

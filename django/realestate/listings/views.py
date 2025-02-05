@@ -1,3 +1,4 @@
+from django import forms
 from django.shortcuts import render
 import joblib
 import pandas as pd
@@ -11,21 +12,36 @@ import matplotlib.pyplot as plt
 def home(request):
     return render(request, 'listings/home.html')
 
-pipeline = joblib.load(r'C:\Users\PC\Desktop\scrapping_danych\model.pkl')
+pipeline = joblib.load(r'model.pkl')
 
 def plot_dzielnica(request):
+    districts_distance_map = {
+        1: ['Centrum', 'Śródmieście', 'Koszutka', 'Bogucice'],
+        2: ['Os. Paderewskiego', 'Muchowiec', 'Załęże', 'Osiedle Wincentego Witosa', 'Witosa', 'Osiedle Tysiąclecia'],
+        3: ['Dąb', 'Wełnowiec-Józefowiec', 'Józefowiec', 'Ligota-Panewniki', 'Ligota', 'Brynów-Osiedle Zgrzebnioka', 'Brynów'],
+        4: ['Załęska Hałda', 'Brynów', 'Zawodzie', 'Dąbrówka Mała', 'Szopienice-Burowiec', 'Szopienice'],
+        5: ['Janów-Nikiszowiec', 'Nikiszowiec', 'Giszowiec', 'Murcki', 'Piotrowice-Ochojec', 'Piotrowice', 'Ochojec', 'Zarzecze', 'Kostuchna', 'Podlesie']
+    }
+
+    grouped_districts = {}
+    for group_number, districts in districts_distance_map.items():
+        group_label = f"Grupa {group_number}"
+        grouped_districts[group_number] = {'label': group_label, 'districts': districts}
+
     data = fetch_data_from_db()
     dzielnice = data['dzielnica_num'].unique()
 
     plot_buffer = None
     stats = None
 
-    if request.method == 'GET' and 'dzielnica' in request.GET:
-        selected_dzielnica = request.GET['dzielnica']
-        print('Wybrana dzielnica: ', selected_dzielnica)
-        plot_buffer, stats = plot_for_dzielnica(selected_dzielnica)
+    if request.method == 'GET' and 'dzielnica_num' in request.GET:
+            selected_group_number = int(request.GET['dzielnica_num'])  
+            selected_group_label = grouped_districts.get(selected_group_number, {}).get('label', 'Nieznana grupa') 
+            print('Wybrana grupa: ', selected_group_label)
+            
+            plot_buffer, stats = plot_for_dzielnica(selected_group_number)
 
-    return render(request, 'listings/plots.html', {'dzielnice': dzielnice, 'plot_buffer': plot_buffer, 'stats': stats})
+    return render(request, 'listings/plots.html', {'dzielnice': dzielnice, 'plot_buffer': plot_buffer, 'stats': stats, 'grouped_districts': grouped_districts})
 
 
 def fetch_data_from_db():
@@ -110,18 +126,27 @@ def search_offers(request):
     return render(request, 'listings/search.html', {'form': form, 'results': results, 'dzielnice': dzielnice})
 
 def predict_price(request):
+    print("wlazlem")
     prediction = None
     if request.method == 'POST':
+        print("wlazlem2")
         form = PredictionForm(request.POST)
-        if form.is_valid():
-            powierzchnia = form.cleaned_data['powierzchnia']
-            liczba_pokoi = form.cleaned_data['liczba_pokoi']
-            pietro = form.cleaned_data['pietro']
-            liczba_pieter = form.cleaned_data['liczba_pieter']
-            garaz = form.cleaned_data['garaz']
-            miejsce_parkingowe = form.cleaned_data['miejsce_parkingowe']
-            dzielnica_num = form.cleaned_data['dzielnica_num']
-
+        try:
+            print("wlazlem3")
+            powierzchnia = float(request.POST.get('powierzchnia'))
+            liczba_pokoi = int(request.POST.get('liczba_pokoi'))
+            pietro = int(request.POST.get('pietro', 0))  
+            liczba_pieter = int(request.POST.get('liczba_pieter', 0))
+            garaz = request.POST.get('garaz') == 'on'  
+            miejsce_parkingowe = request.POST.get('miejsce_parkingowe') == 'on' 
+            dzielnica_num = int(request.POST.get('dzielnica_num'))
+            print(f"Input values: {powierzchnia}, {liczba_pokoi}, {pietro}, {liczba_pieter}, {garaz}, {miejsce_parkingowe}, {dzielnica_num}")
+            if any(val <= 0 for val in [powierzchnia, liczba_pokoi, pietro, liczba_pieter, dzielnica_num]):
+                raise ValueError("Wartości liczbowe muszą być większe od 0")
+            if pietro and liczba_pieter:
+                if pietro > liczba_pieter:
+                    raise forms.ValidationError("Pietro nie moze byc wieksze od liczby pieter!")
+            
             new_data = pd.DataFrame({
                 'Powierzchnia całkowita': [powierzchnia],
                 'Liczba pokoi': [liczba_pokoi],
@@ -131,7 +156,14 @@ def predict_price(request):
                 'miejsce parkingowe': [miejsce_parkingowe],
                 'dzielnica_num': [dzielnica_num]
             })
-            prediction = pipeline.predict(new_data)[0]
+            try:
+                prediction = pipeline.predict(new_data)[0]
+            except Exception as e:
+                print(f"Prediction error: {e}")
+                prediction = None
+        except (ValueError, TypeError) as e:
+            print(f"Error processing form data: {e}")
+            prediction = None
 
     else:
         form = PredictionForm()
